@@ -18,9 +18,15 @@
 #include "qemu-queue.h"
 
 #ifdef CONFIG_KVM
+
+#ifdef TARGET_I386
 extern int kvm_allowed;
 
 #define kvm_enabled() (kvm_allowed)
+#else
+#define kvm_enabled() (0)
+#endif
+
 #else
 #define kvm_enabled() (0)
 #endif
@@ -79,6 +85,8 @@ int kvm_put_mp_state(CPUState *env);
 
 int kvm_arch_post_run(CPUState *env, struct kvm_run *run);
 
+int kvm_arch_vcpu_run(CPUState *env);
+
 int kvm_arch_handle_exit(CPUState *env, struct kvm_run *run);
 
 int kvm_arch_pre_run(CPUState *env, struct kvm_run *run);
@@ -128,7 +136,9 @@ uint32_t kvm_arch_get_supported_cpuid(CPUState *env, uint32_t function,
                                       int reg);
 
 /* generic hooks - to be moved/refactored once there are more users */
-
+#ifdef CONFIG_HAX
+void hax_vcpu_sync_state(CPUState *env, int modified);
+#endif
 static inline void cpu_synchronize_state(CPUState *env, int modified)
 {
     if (kvm_enabled()) {
@@ -137,6 +147,12 @@ static inline void cpu_synchronize_state(CPUState *env, int modified)
         else
             kvm_arch_get_registers(env);
     }
+#ifdef CONFIG_HAX
+    hax_vcpu_sync_state(env, modified);
+#endif
 }
+
+int kvm_get_sregs(CPUState *env);
+
 
 #endif

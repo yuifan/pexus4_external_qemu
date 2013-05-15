@@ -34,6 +34,10 @@ typedef struct {
 #include "android/avd/hw-config-defs.h"
 } AndroidHwConfig;
 
+/* Set all default values, based on the target API level */
+void androidHwConfig_init( AndroidHwConfig*  hwConfig,
+                           int               apiLevel );
+
 /* reads a hardware configuration file from disk.
  * returns -1 if the file could not be read, or 0 in case of success.
  *
@@ -42,5 +46,22 @@ typedef struct {
  */
 int  androidHwConfig_read( AndroidHwConfig*  hwConfig,
                            IniFile*          configFile );
+
+/* Write a hardware configuration to a config file object.
+ * Returns 0 in case of success. Note that any value that is set to the
+ * default will not bet written.
+ */
+int  androidHwConfig_write( AndroidHwConfig*  hwConfig,
+                            IniFile*          configFile );
+
+/* Finalize a given hardware configuration */
+void androidHwConfig_done( AndroidHwConfig* config );
+
+/* Checks if screen doesn't support touch, or multi-touch */
+int  androidHwConfig_isScreenNoTouch( AndroidHwConfig* config );
+/* Checks if screen supports touch (but not multi-touch). */
+int  androidHwConfig_isScreenTouch( AndroidHwConfig* config );
+/* Checks if screen supports multi-touch. */
+int  androidHwConfig_isScreenMultiTouch( AndroidHwConfig* config );
 
 #endif /* _ANDROID_AVD_HW_CONFIG_H */

@@ -40,6 +40,7 @@ typedef struct {
 } NetworkSpeed;
 
 extern const NetworkSpeed   android_netspeeds[];
+extern const size_t android_netspeeds_count;
 
 /* list of supported network latency names and min-max values in ms */
 typedef struct {
@@ -50,6 +51,7 @@ typedef struct {
 } NetworkLatency;
 
 extern const NetworkLatency  android_netdelays[];
+extern const size_t android_netdelays_count;
 
 /* default network settings for emulator */
 #define  DEFAULT_NETSPEED  "full"
@@ -94,6 +96,13 @@ extern int   android_parse_network_speed(const char*  speed);
 /* parse a network delay parameter and sets qemu_net_min/max_latency
  * accordingly. returns -1 on error, 0 on success */
 extern int   android_parse_network_latency(const char*  delay);
+
+/**  in qemu_setup.c */
+
+#define ANDROID_GLSTRING_BUF_SIZE 128
+extern char android_gl_vendor[ANDROID_GLSTRING_BUF_SIZE];
+extern char android_gl_renderer[ANDROID_GLSTRING_BUF_SIZE];
+extern char android_gl_version[ANDROID_GLSTRING_BUF_SIZE];
 
 extern void  android_emulation_setup( void );
 extern void  android_emulation_teardown( void );
